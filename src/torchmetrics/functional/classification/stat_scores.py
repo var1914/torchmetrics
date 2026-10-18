@@ -443,7 +443,7 @@ def _multiclass_stat_scores_update(
             target = target[idx]
         preds = preds.to(torch.long)
         target = target.to(torch.long)
-        tp = _bincount(target[preds == target], minlength=num_classes)
+        tp = _bincount(torch.where(preds == target, target, num_classes), minlength=num_classes + 1)[:num_classes]
         fp = _bincount(preds, minlength=num_classes) - tp
         fn = _bincount(target, minlength=num_classes) - tp
         tn = target.numel() - (tp + fp + fn)
